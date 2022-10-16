@@ -1,0 +1,5 @@
+{
+    "err.403": "Vous n'êtes pas autorisés à faire cela, voici pourquoi: {0}",
+    "err.500": "Erreur côté serveur: {0}",
+    "Cat.info.name": "Informations"
+}

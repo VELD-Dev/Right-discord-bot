@@ -1,5 +1,3 @@
-import { Collection, SlashCommandBuilder } from "discord.js";
-
 declare global {
     interface String {
         /**
@@ -9,7 +7,7 @@ declare global {
          */
         format(...args): string;
     }
-    commands: Collection = new Collection<String, SlashCommandBuilder>();
+    var _dirname: string;
 }
 
 export {};

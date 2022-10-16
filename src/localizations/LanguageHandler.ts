@@ -1,5 +1,7 @@
-import { ELang } from "../types/ELang";
-import { ILangObject } from "../types/ILangObject";
+import { readFileSync } from "fs";
+import { ELang } from "../types/ELang.js";
+import { ILangObject } from "../types/ILangObject.js";
+import "../types/String.js";
 
 /**Language handler of RIGHT Bot */
 export class LanguageHandler {
@@ -20,10 +22,9 @@ export class LanguageHandler {
      * @arguments Strings for formatting
      * @returns String of the translation formatted (if implemented). 
      */
-    public getString(identifier: string, ...args: any[]): string {
-        let LO = LanguageHandler.encacheLanguage(ELang[this.language]);
-        
-        let value = LO[identifier].format(args);
+    public async getString(identifier: string, ...args: any[]): Promise<string> {
+        let LO = await LanguageHandler.encacheLanguage(ELang[this.language]);
+        let value = LO[identifier] ? LO[identifier].format(args) : LanguageHandler.getString(identifier, args);
         return value;
     }
 
@@ -32,10 +33,9 @@ export class LanguageHandler {
      * @arguments Strings for formatting
      * @returns String of the translation (formatted if implemented)
      */
-    public static getString(identifier: string, ...args: any[]): string {
-        let LO = LanguageHandler.encacheLanguage(ELang.EN);
-
-        let value = LO[identifier].format(args);
+    public static async getString(identifier: string, ...args: any[]): Promise<string> {
+        let LO = await LanguageHandler.encacheLanguage(ELang.EN);
+        let value = LO[identifier] ? LO[identifier].format(args) : identifier;
         return value;
     }
 
@@ -46,7 +46,7 @@ export class LanguageHandler {
     private static async encacheLanguage(lang: ELang): Promise<ILangObject> {
         if(LanguageHandler.loadedLanguages.has(lang)) return LanguageHandler.loadedLanguages.get(lang);
 
-        let langFile: ILangObject = await import(`./${Object.keys(ELang)[lang]}.json,`) as ILangObject;
+        let langFile: ILangObject = JSON.parse(readFileSync(_dirname + '/localizations/' + Object.keys(ELang)[lang] + '.json').toString()) as ILangObject;
         LanguageHandler.loadedLanguages.set(lang, langFile);
         console.log("[LH] - A new language have been added to cache.")
         return langFile;

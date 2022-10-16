@@ -6,3 +6,5 @@ String.prototype.format = function(this: string, ...args: any[]): string {
     }
     return value;
 }
+
+export {};

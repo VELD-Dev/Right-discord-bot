@@ -1,12 +1,12 @@
-import { Client, CommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
-import { ELang } from "./ELang";
+import { Client, CommandInteraction, PermissionsBitField, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder } from "discord.js";
+import { LanguageHandler } from "../localizations/LanguageHandler.js";
 
 export interface ICommand {
     name: string;
     description: string;
     usage: string;
     category: string;
-    permissions: PermissionsBitField;
-    data: SlashCommandBuilder;
-    execute(client: Client, interaction: CommandInteraction, interactionLocale: ELang): void;
+    permissions?: PermissionsBitField;
+    data: RESTPostAPIApplicationCommandsJSONBody;
+    execute(client: Client, interaction: CommandInteraction, interactionLocale: LanguageHandler): Promise<void> | void;
 }

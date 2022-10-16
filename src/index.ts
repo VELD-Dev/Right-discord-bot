@@ -1,16 +1,26 @@
 import { Client, Collection, IntentsBitField, REST, RESTPostAPIApplicationCommandsJSONBody, RESTPutAPIApplicationCommandsJSONBody, Routes } from "discord.js";
 import { createWriteStream, fstat, readdir, readdirSync } from "fs";
-import path from "path";
-import { ICommand } from "./types/ICommand";
+import { ICommand } from "./types/ICommand.js";
+import { fileURLToPath } from "url"
 import Util from "util";
+import path from "path";
+import "./types/String.js";
+import de from "dotenv";
+
+global._dirname = path.dirname(fileURLToPath(import.meta.url));
+de.config({ path: _dirname + '/../.env' })
 
 // Log to file
-let logFile = createWriteStream("{0}/logs.log".format(__dirname), { flags: "w" });
+let logFile = createWriteStream("{0}/logs.log".format(global._dirname), { flags: "w" });
 let logStdout = process.stdout;
 console.log = function(d: any) {
     logFile.write(Util.format(d) + '\n');
     logStdout.write(Util.format(d) + '\n');
 };
+console.error = function(d: any) {
+    logFile.write(Util.format(d) + '\n')
+    logStdout.write(Util.format(d) + '\n');
+}
 
 // Client object
 const client = new Client({ intents: [
@@ -40,49 +50,48 @@ const client = new Client({ intents: [
 
 // external variables (not in global.d.ts because 2lzy)
 export let commands: Collection<string, ICommand> = new Collection<string, ICommand>();
-export let slashCommands: RESTPostAPIApplicationCommandsJSONBody[];
-export let catDirnames: string[] = readdirSync("./commands/", { withFileTypes: true }).filter((v) => v.isDirectory()).map(dir => dir.name);
-export let categories: string[];
+export let slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+export let catDirnames: string[] = readdirSync(_dirname + '/commands/', { withFileTypes: true }).filter((v) => v.isDirectory()).map(dir => dir.name);
+export let categories: string[] = [];
 
 try {
-    // Loads event to files
-    readdir("./events/", (err, files) => {
+    // Loads event files
+    readdir(`${_dirname}/events/`, (err, files) => {
         if(err) throw new Error("[RIGHT] - Failed at reading events files", { cause: err });
-        files.forEach(file => {
+        files.forEach(async file => {
             if(!file.endsWith(".e.js")) return;
-            const event = require(`./events/${file}`);
+            let event = (await import(`./events/${file}`)).default;
             let eventName = file.split(".")[0];
-            delete require.cache[require.resolve(`./events/${file}`)];
             client.on(eventName, event.bind(null, client))
             console.log("[RIGHT] - Event {0} loaded successfully".format(file))
         })
         console.log("[RIGHT] - Loaded successfully {0} events.".format(files.length))
     })
 } catch (err) {
-    throw new Error("[RIGHT] - Failed at loading events.", { cause: err })
+    throw new Error("E [RIGHT] - Failed at loading events.", { cause: err })
 }
 
 try {
     catDirnames.forEach(async dir => {
         if(!/(c\..+)/ig.exec(dir)) return;
-        categories.push(dir.split(".")[1])
-        readdir(`./commands/${dir}/`, async (err, files) => {
+        categories.push(dir.split(".")[1]);
+        readdir(`${_dirname}/commands/${dir}/`, async (err, files) => {
             if(err) throw new Error(`An error has ocurred with code ${err.code} while starting commands handler: ${err.message}`, { cause: err.cause });
-            let commandFiles = files.filter(c => c.endsWith(".js"))
-            for(const cfile in commandFiles) {
+            let commandFiles = files.filter(c => c.endsWith("c.js"));
+            for(let i = 0; i < commandFiles.length; i++) {
                 try {
-                    const command = require(`./commands/${dir}/${cfile}`) as ICommand;
+                    let command = (await import(`./commands/${dir}/${commandFiles[i]}`)).obj;
                     commands.set(command.name, command);
-                    slashCommands.push(command.data.toJSON())
-                    console.log("[RIGHT] - (/) Slash command {0} in {1} loaded successfully".format(cfile, dir))
+                    slashCommands.push(command.data);
+                    console.log("[RIGHT] - (/) Slash command {0} in {1} loaded successfully".format(commandFiles[i], dir));
                 } catch (err) {
-                    console.log("[RIGHT] - (/) Slash command {0} in {1} failed at loading.\n{2}".format(cfile, dir, err))
+                    console.log("E [RIGHT] - (/) Slash command {0} in {1} failed at loading.\n{2}".format(commandFiles[i], dir, err));
                 }
             }
         });
     });
 } catch (err) {
-    throw new Error("[RIGHT] - Failed at loading commands scripts", { cause: err })
+    throw new Error("E [RIGHT] - Failed at loading commands scripts", { cause: err })
 }
 
 client.login(process.env.TOKEN).then(() => {
@@ -95,7 +104,6 @@ client.login(process.env.TOKEN).then(() => {
         );
         console.log("[RIGHT] - Successfully reloaded (/) Slash commands");
     } catch (err) {
-        throw Error("[RIGHT] - Failed at reloading of (/) Slash commands", { cause: err })
+        throw Error("E [RIGHT] - Failed at reloading of (/) Slash commands", { cause: err })
     }
-    
 })
