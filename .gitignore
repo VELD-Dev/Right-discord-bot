@@ -1,0 +1,9 @@
+# Node modules
+node_modules/
+
+# Config files
+*.c.json
+
+# Databases
+src/database/*.sqlite
+
