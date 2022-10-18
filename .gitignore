@@ -4,6 +4,7 @@ node_modules/
 # Config files
 *.c.json
 *.env
+.vscode/
 
 # Databases
 src/database/*.sqlite

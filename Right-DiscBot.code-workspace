@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "./"
+		}
+	],
+	"settings": {
+		"rpc.appName": "Visual Studio Code",
+		"rpc.buttonActiveUrl": "https://github.com/VELD-Dev/Right-discord-bot",
+		"rpc.buttonInactiveLabel": "View Repository",
+		"rpc.buttonInactiveUrl": "https://github.com/VELD-Dev/Right-discord-bot",
+		"rpc.idleTimeout": 9999
+	}
+}

@@ -24,7 +24,7 @@ export class LanguageHandler {
      */
     public async getString(identifier: string, ...args: any[]): Promise<string> {
         let LO = await LanguageHandler.encacheLanguage(ELang[this.language]);
-        let value = LO[identifier] ? LO[identifier].format(args) : LanguageHandler.getString(identifier, args);
+        let value = LO[identifier] ? LO[identifier].format(...args) : LanguageHandler.getString(identifier, args);
         return value;
     }
 
@@ -35,7 +35,7 @@ export class LanguageHandler {
      */
     public static async getString(identifier: string, ...args: any[]): Promise<string> {
         let LO = await LanguageHandler.encacheLanguage(ELang.EN);
-        let value = LO[identifier] ? LO[identifier].format(args) : identifier;
+        let value = LO[identifier] ? LO[identifier].format(...args) : identifier;
         return value;
     }
 

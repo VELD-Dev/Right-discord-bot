@@ -1,11 +1,11 @@
-import { Client, CommandInteraction, PermissionsBitField } from "discord.js";
+import { Client, CommandInteraction } from "discord.js";
 import { readFileSync } from "fs";
 import { commands } from "../index.js";
 import { LanguageHandler } from "../localizations/LanguageHandler.js";
 import { ELang } from "../types/ELang.js";
 import "../types/String.js";
 
-const authors = JSON.parse(readFileSync("{0}/configs/authors.c.json".format(_dirname)).toString());
+const authors = JSON.parse(readFileSync("{0}/configs/authors.json".format(_dirname)).toString());
 
 export default async function(client: Client, interaction: CommandInteraction): Promise<any> {
     let interactionLocale = Object.keys(ELang).some(k => interaction.locale.startsWith(k)) ? interaction.locale.split("-")[0].toUpperCase() : ELang[0];
@@ -15,7 +15,7 @@ export default async function(client: Client, interaction: CommandInteraction): 
 
         console.time('processing_command');
         await interaction.channel.sendTyping();
-        if(command.category.toLowerCase().match(/dev/gi) && new RegExp('({0})'.format(authors.map(a => a.id).join("|"))).test(interaction.user.id))
+        if(command.category.toLowerCase().match(/d[eé]v/gi) && new RegExp('({0})'.format(authors.map(a => a.id).join("|"))).test(interaction.user.id))
             return interaction.reply({ content: (await LN.getString("err.403")).format("DEVELOPER_ONLY"), ephemeral: true });
         if(command.permissions) {
             if(!interaction.memberPermissions.has(command.permissions))

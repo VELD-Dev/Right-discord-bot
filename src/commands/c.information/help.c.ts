@@ -22,7 +22,7 @@ export const obj: ICommand = {
         let embed = new EmbedBuilder()
             .setTitle(await LN.getString("c.information.help.e1.title"))
             .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ size: 128, extension: "png" }) })
-            .setDescription((await LN.getString("c.information.help.e1.desc", commands.size, '`' + commands.map(c => c.name).join("`, `") + '`')))
+            .setDescription((await LN.getString("c.information.help.e1.desc", commands.size, '`' + commands.filter(c => !(/d[eé]v.+/gi).test(c.category)).map(c => c.name).join("`, `") + '`')))
             .setColor("Blurple")
             .setFooter({ text: await LN.getString("c.information.help.e1.footer", interaction.guild.name), iconURL: interaction.guild.iconURL({ size: 128, extension: "png" }) })
         interaction.reply({ embeds: [embed], ephemeral: true })
