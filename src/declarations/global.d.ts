@@ -1,3 +1,5 @@
+import { RIGHT } from "../index.js";
+
 declare global {
     interface String {
         /**
@@ -8,6 +10,7 @@ declare global {
         format(...args): string;
     }
     var _dirname: string;
+    var bot: RIGHT.Bot;
 }
 
 export {};

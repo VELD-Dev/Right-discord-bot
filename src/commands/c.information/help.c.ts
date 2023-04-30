@@ -1,7 +1,5 @@
 import { EmbedBuilder, RESTPostAPIApplicationCommandsJSONBody, SlashCommandBuilder } from "discord.js";
-import { commands } from "../../index.js";
-import { ICommand } from "../../types/ICommand.js";
-import "../../types/String.js";
+import { Types } from "../../types/Types";
 
 let data: RESTPostAPIApplicationCommandsJSONBody = new SlashCommandBuilder()
     .setName("help")
@@ -12,7 +10,7 @@ let data: RESTPostAPIApplicationCommandsJSONBody = new SlashCommandBuilder()
     )
     .toJSON();
 
-export const obj: ICommand = {
+export const obj: Types.ICommand = {
     name: "help",
     category: "information",
     description: "c.information.help.g.desc",
@@ -22,7 +20,7 @@ export const obj: ICommand = {
         let embed = new EmbedBuilder()
             .setTitle(await LN.getString("c.information.help.e1.title"))
             .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ size: 128, extension: "png" }) })
-            .setDescription((await LN.getString("c.information.help.e1.desc", commands.size, '`' + commands.filter(c => !(/d[eé]v.+/gi).test(c.category)).map(c => c.name).join("`, `") + '`')))
+            .setDescription((await LN.getString("c.information.help.e1.desc", bot.commands.size, '`' + bot.commands.filter(c => !(/d[eé]v.+/gi).test(c.category)).map(c => c.name).join("`, `") + '`')))
             .setColor("Blurple")
             .setFooter({ text: await LN.getString("c.information.help.e1.footer", interaction.guild.name), iconURL: interaction.guild.iconURL({ size: 128, extension: "png" }) })
         interaction.reply({ embeds: [embed], ephemeral: true })

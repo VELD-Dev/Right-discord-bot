@@ -1,0 +1,8 @@
+{
+    "err.403": "Vous n'êtes pas autorisés à faire cela, voici pourquoi: {0}",
+    "err.500": "Erreur côté serveur: {0}",
+    "Cat.info.name": "Informations",
+    "c.information.help.e1.title": "**RIGHT** - Aide",
+    "c.information.help.e1.desc": "Vous voulez plus d'informations sur une commande ? Vous le pouvez ! Écrivez juste `/help command_name:NOM_DE_COMMANDE`, vous devriez avoir une interface assez cool pour vous aider avec ça.\n\nCommandes existantes sur le bot: `{0}`\n\nCommandes: {1}",
+    "c.information.help.e1.footer": "{0} - Right par V E L D"
+}
